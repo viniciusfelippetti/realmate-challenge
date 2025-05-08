@@ -9,7 +9,7 @@ from .models import Conversation
 
 class WebhookCreateView(mixins.CreateModelMixin, GenericAPIView):
     """
-    View que processa eventos de webhook via POST.
+    View que processa as mensagens
     """
     serializer_class = MessageSerializer
     permission_classes = [IsAuthenticated]
@@ -30,7 +30,6 @@ class WebhookCreateView(mixins.CreateModelMixin, GenericAPIView):
                 if conversation.status == 'CLOSED':
                     return Response({"error": "Conversa foi encerrada"}, status=status.HTTP_400_BAD_REQUEST)
 
-                # Usa o serializer para criar a mensagem
                 serializer = self.get_serializer(data={
                     "id": data['id'],
                     "direction": data['direction'],
