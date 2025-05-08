@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Conversas</title>
+
+    <!-- Bootstrap + SB Admin 2 -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.4/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+    <!-- DataTables (opcional) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+</head>
+
+<body id="page-top">
+<div id="wrapper">
+    <!-- Sidebar (pode deixar vazio ou customizar) -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+            <div class="sidebar-brand-icon">
+                <i class="fas fa-comments"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">Conversas</div>
+        </a>
+    </ul>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
+                <h1 class="h4 mb-0 text-gray-800">Lista de Conversas</h1>
+            </nav>
+
+            <!-- Page Content -->
+            <div class="container-fluid">
+                <!-- Card com a tabela -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Conversas Registradas</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="conversationsTable" width="100%" cellspacing="0">
+                                <thead>
+                                <tr>
+                                    <th>ID da conversa</th>
+                                    <th>Status</th>
+                                    <th>Data de criação</th>
+                                    <th>Ação</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for conversation in conversations %}
+                                    <tr>
+                                        <td>{{ conversation.id }}</td>
+                                        <td>
+                                            {% if conversation.status == "OPEN" %}
+                                                <span class="btn btn-success btn-sm disabled">OPEN</span>
+                                            {% else %}
+                                                <span class="btn btn-danger btn-sm disabled">CLOSED</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ conversation.created_at }}</td>
+                                        <td>
+                                            <a href="{% url 'conversation_detail' conversation.id %}"
+                                               class="btn btn-primary btn-sm">
+                                                Ver Detalhes
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- /.container-fluid -->
+        </div> <!-- End of Content -->
+    </div> <!-- End of Content Wrapper -->
+</div> <!-- End of Wrapper -->
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.4/js/sb-admin-2.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#conversationsTable').DataTable();
+    });
+</script>
+</body>
+
+</html>

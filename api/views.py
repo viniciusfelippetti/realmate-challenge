@@ -1,16 +1,18 @@
 from rest_framework.generics import RetrieveAPIView, GenericAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status, mixins
-from .models import Conversation
 from django.utils.dateparse import parse_datetime
 from .serializers import ConversationSerializer, MessageSerializer
-
+from django.shortcuts import render, get_object_or_404
+from .models import Conversation
 
 class WebhookCreateView(mixins.CreateModelMixin, GenericAPIView):
     """
     View que processa eventos de webhook via POST.
     """
     serializer_class = MessageSerializer
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         try:
@@ -19,7 +21,7 @@ class WebhookCreateView(mixins.CreateModelMixin, GenericAPIView):
             data = request.data.get('data', {})
 
             if event_type == "NEW_CONVERSATION":
-                Conversation.objects.get_or_create(id=data['id'])
+                Conversation.objects.create(id=data['id'])
 
             elif event_type == "NEW_MESSAGE":
                 conversation = Conversation.objects.filter(id=data['conversation_id']).first()
@@ -55,4 +57,17 @@ class WebhookCreateView(mixins.CreateModelMixin, GenericAPIView):
 class ConversationDetailView(RetrieveAPIView):
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
+    permission_classes = [IsAuthenticated]
     lookup_field = 'id'
+
+
+
+
+def conversation_list_view(request):
+    conversations = Conversation.objects.all()
+    return render(request, 'conversations/list.html', {'conversations': conversations})
+
+def conversation_detail_view(request, id):
+    conversation = get_object_or_404(Conversation, id=id)
+    messages = conversation.messages.all()
+    return render(request, 'conversations/detail.html', {'conversation': conversation, 'messages': messages})

@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhes da Conversa</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Conversa ID: {{ conversation.id }}</h4>
+                {% if conversation.status == "OPEN" %}
+                    <span class="btn btn-success btn-sm disabled">OPEN</span>
+                {% elif conversation.status == "CLOSED" %}
+                    <span class="btn btn-danger btn-sm disabled">CLOSED</span>
+                {% else %}
+                    <span class="btn btn-secondary btn-sm disabled">{{ conversation.status }}</span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Mensagens:</h5>
+                {% if messages %}
+                    <ul class="list-group">
+                        {% for message in messages %}
+                            <li class="list-group-item">
+                                <strong>{{ message.direction }}</strong>: {{ message.content }}
+                                <span class="text-muted float-right small">{{ message.timestamp|date:"d/m/Y H:i" }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">Nenhuma mensagem encontrada.</p>
+                {% endif %}
+                <a href="{% url 'conversation_list' %}" class="btn btn-link mt-3">← Voltar para a lista</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts opcionais do Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
